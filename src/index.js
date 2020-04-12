@@ -1,21 +1,24 @@
 const Discord = require('discord.js');
-const ytdl = require('ytdl-core');
+
+const commands = require('./commands');
+const { token } = require('./config/auth.json');
 
 const client = new Discord.Client();
-
-const { token } = require('./config/auth.json');
 
 client.on('ready', () => {
   console.log(`Logged in as ${client.user.tag}!`);
 });
 
 client.on('message', async msg => {
+  const message = msg.content;
+
+  if (message.startsWith('.')) {
+    const messageSplitted = message.substr(1).split(' ');
+    commands.resolve(msg,...messageSplitted);
+  }
+
   if (msg.content === 'ping') {
     msg.reply('Pong!');
-  }
-  if (msg.content === 'p') {
-    const broadcast = await msg.member.voice.channel.join();
-    broadcast.play(ytdl('https://www.youtube.com/watch?v=SCxBtaZERR4', { type: 'opus', filter: 'audioonly' }))
   }
 });
 
