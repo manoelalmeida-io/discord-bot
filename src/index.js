@@ -1,25 +1,14 @@
-const Discord = require('discord.js');
+const express = require('express');
 
-const commands = require('./commands');
-const { token } = require('./config/auth.json');
+const app = express();
+const port = process.env.PORT;
 
-const client = new Discord.Client();
-
-client.on('ready', () => {
-  console.log(`Logged in as ${client.user.tag}!`);
+app.get('/', (req, res) => {
+  res.send('welcome');
 });
 
-client.on('message', async msg => {
-  const message = msg.content;
-
-  if (message.startsWith('.')) {
-    const messageSplitted = message.substr(1).split(' ');
-    commands.resolve(msg,...messageSplitted);
-  }
-
-  if (msg.content === 'ping') {
-    msg.reply('Pong!');
-  }
+app.listen(port, () => {
+  console.log(`App listening on port ${port}`);
 });
 
-client.login(token);
+require('./bot');
