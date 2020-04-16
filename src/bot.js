@@ -1,7 +1,6 @@
 const Discord = require('discord.js');
 
 const commands = require('./commands');
-const { token } = require('./config/auth.json');
 
 const client = new Discord.Client();
 
@@ -22,4 +21,10 @@ client.on('message', async msg => {
   }
 });
 
-client.login(token || process.env.TOKEN);
+if (process.env.TOKEN) {
+	client.login(process.env.TOKEN);
+}
+else {
+	const { token } = require('./config/auth.json');
+	client.login(token);
+}
