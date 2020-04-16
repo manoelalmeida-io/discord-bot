@@ -4,7 +4,7 @@ const play = async (msg, args) => {
   console.log('tocando...', args);
 
   const connection = await msg.member.voice.channel.join();
-  const dispatcher = await connection.play(ytdl(args[0], { filter: 'audioonly' }), { volume: 0.1 });
+  const dispatcher = await connection.play(ytdl(args[0], { filter: 'audioonly' }));
 }
 
 module.exports = play;
