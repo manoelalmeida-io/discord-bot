@@ -23,5 +23,3 @@ client.on('message', async msg => {
 });
 
 client.login(token || process.env.TOKEN);
-
-module.exports = client;
