@@ -12,7 +12,7 @@ client.on('ready', () => {
 client.on('message', async msg => {
   const message = msg.content;
 
-  if (message.startsWith('.')) {
+  if (message.startsWith('!')) {
     const messageSplitted = message.substr(1).split(' ');
     commands.resolve(msg,...messageSplitted);
   }
