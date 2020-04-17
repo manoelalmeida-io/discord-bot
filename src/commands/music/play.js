@@ -1,10 +1,10 @@
 const ytdl = require('ytdl-core');
 
-const play = async (msg, args) => {
-  console.log('tocando...', args);
-
+const play = async ({ msg, args }) => {
   const connection = await msg.member.voice.channel.join();
-  const dispatcher = await connection.play(ytdl(args[0], { filter: 'audioonly' }));
+  await connection.play(ytdl(args[0], { filter: 'audioonly' }));
+
+  console.log('playing now:', args);
 }
 
 module.exports = play;
