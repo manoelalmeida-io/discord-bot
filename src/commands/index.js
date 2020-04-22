@@ -1,10 +1,15 @@
 const play = require('./music/play');
 const stop = require('./music/stop');
+const pause = require('./music/pause');
+const resume = require('./music/resume');
+
 const fala = require('./misc/fala');
 
 const acceptedCommands = {
   play,
   stop,
+  pause,
+  resume,
   fala
 }
 
