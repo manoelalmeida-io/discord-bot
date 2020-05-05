@@ -2,6 +2,7 @@ const play = require('./music/play');
 const stop = require('./music/stop');
 const pause = require('./music/pause');
 const resume = require('./music/resume');
+const np = require('./music/np');
 
 const fala = require('./misc/fala');
 
@@ -10,7 +11,8 @@ const acceptedCommands = {
   stop,
   pause,
   resume,
-  fala
+  np,
+  fala,
 }
 
 const resolve = (msg, command, ...args) => {
