@@ -1,6 +1,6 @@
-function embed(title, author) {
+function embed(title, author, next) {
   return {
-    title: 'Now playing',
+    title: next ? 'Now playing' : 'Added to queue',
     fields: [
       {
         name: 'from youtube',
