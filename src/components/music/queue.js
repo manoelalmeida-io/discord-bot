@@ -1,25 +1,31 @@
-const queue = [];
+const list = [];
+let channel = null;
+
+function QueueItem(title, url, author) {
+  return {
+    title,
+    url,
+    author
+  }
+}
 
 const isEmpty = function() {
-  return queue.length === 0;
-}
-
-const add = function(music) {
-  queue.push(music);
-}
-
-const shift = function() {
-  queue.shift();
+  return list.length === 0;
 }
 
 const playingNow = function() {
-  return queue[0];
+  return list[0];
+}
+
+const flush = function() {
+  list.splice(0, list.length);
 }
 
 module.exports = {
-  queue,
+  list,
+  channel,
   isEmpty,
   playingNow,
-  add,
-  shift
+  flush,
+  QueueItem
 };
