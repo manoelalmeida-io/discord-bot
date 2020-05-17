@@ -1,13 +1,11 @@
-const ytdl = require('ytdl-core');
 const embed = require('../../embeds/music/np');
-const queue = require('../../components/music/queue');
+const { Queue } = require('../../components/music/queue');
 
-const np = async ({ msg }) => {
-  const connection = await msg.member.voice.channel.join();
+const np = async ({ client, msg }) => {
+  const queue = new Queue();
+  const playing = queue.playingNow(client.voiceChannel.id);
 
-  videoInfo = await ytdl.getBasicInfo(queue.playingNow().args[0]);
-
-  msg.channel.send({ embed: embed(videoInfo.title, msg.author) });
+  msg.channel.send({ embed: embed(playing.title, playing.author) });
 }
 
 module.exports = np;

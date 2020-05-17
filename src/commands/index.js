@@ -15,11 +15,11 @@ const acceptedCommands = {
   fala,
 }
 
-const resolve = (msg, command, ...args) => {
+const resolve = (client, msg, command, ...args) => {
   const action = acceptedCommands[command];
   
   if (action) {
-    action({ msg, args });
+    action({ client, msg, args });
   }else{
     msg.reply('tá errado irmão');
   }

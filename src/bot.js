@@ -14,7 +14,7 @@ client.on('message', async msg => {
 
   if (message.startsWith('!')) {
     const messageSplitted = message.substr(1).split(' ');
-    commands.resolve(msg,...messageSplitted);
+    commands.resolve(client, msg, ...messageSplitted);
   }
 
   if (msg.content === 'ping') {

@@ -1,60 +1,54 @@
 const ytdl = require('ytdl-core');
 const embed = require('../../embeds/music/play');
-const queue = require('../../components/music/queue');
+const { Queue, QueueItem } = require('../../components/music/queue');
 
-const play = async ({ msg, args }) => {
+const play = async ({ client, msg, args }) => {
   const url = args[0];
 
-  try {
-    const connection = await msg.member.voice.channel.join();
-  
-    if (msg.member.voice.channel !== queue.channel) {
-      queue.flush();
-      queue.channel = msg.member.voice.channel;
-    }
-  
-    if (queue.isEmpty()) {
-      let dispatcher = await connection.play(ytdl(url, { filter: 'audioonly' }));
-  
-      dispatcher.once('finish', () => {
-        queue.list.shift();
-        if (!queue.isEmpty()) {
-          next(queue.playingNow());
-        }
-      });
-    }
-  
-    videoInfo = await ytdl.getBasicInfo(url);
-  
-    msg.channel.send({ embed: embed(videoInfo.title, msg.author, queue.isEmpty()) });
-    queue.list.push(queue.QueueItem(videoInfo.title, url, msg.author));
-  
-    console.log('playing now:', args);
-  } catch (err) {
-    console.log(err);
-    queue.flush();
+  const queue = new Queue();
+  const connection = await msg.member.voice.channel.join();
+
+  client.voiceChannel = msg.member.voice.channel;
+
+  if (queue.isEmpty(msg.member.voice.channel.id)) {
+    let dispatcher = await connection.play(ytdl(url, { filter: 'audioonly' }));
+
+    dispatcher.once('finish', () => {
+      queue.shift(client.voiceChannel.id);
+      if (!queue.isEmpty(client.voiceChannel.id)) {
+        next(queue.playingNow(client.voiceChannel.id));
+      }
+    });
   }
+
+  const videoInfo = await ytdl.getBasicInfo(url);
+
+  msg.channel.send({ embed: embed(videoInfo.title, msg.author, queue.isEmpty(msg.member.voice.channel.id)) });
+
+  queue.add(QueueItem(
+    videoInfo.title,
+    url,
+    msg.author,
+    msg.member.voice.channel
+  ));
+
+  console.log('playing now:', args);
 }
 
 const next = async(music) => {
   const { url } = music;
 
-  try {
-    const connection = await queue.channel.join();
-    let dispatcher = await connection.play(ytdl(url, { filter: 'audioonly' }));
-  
-    dispatcher.once('finish', () => {
-      queue.list.shift();
-      if (!queue.isEmpty()) {
-        next(queue.playingNow());
-      }
-    });
-  
-    console.log('next:', url);
-  } catch (err) {
-    console.log(err);
-    queue.flush();
-  }
+  const connection = await music.channel.join();
+  let dispatcher = await connection.play(ytdl(url, { filter: 'audioonly' }));
+
+  dispatcher.once('finish', () => {
+    queue.shift(client.voiceChannel.id);
+    if (!queue.isEmpty(client.voiceChannel.id)) {
+      next(queue.playingNow(client.voiceChannel.id));
+    }
+  });
+
+  console.log('next:', url);
 }
 
 module.exports = play;
