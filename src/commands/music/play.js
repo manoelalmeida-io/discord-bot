@@ -14,6 +14,7 @@ const play = async ({ client, msg, args }) => {
     let dispatcher = await connection.play(ytdl(url, { filter: 'audioonly' }));
 
     dispatcher.once('finish', () => {
+      const queue = new Queue();
       queue.shift(client.voiceChannel.id);
       if (!queue.isEmpty(client.voiceChannel.id)) {
         next(queue.playingNow(client.voiceChannel.id));
@@ -42,6 +43,7 @@ const next = async(music) => {
   let dispatcher = await connection.play(ytdl(url, { filter: 'audioonly' }));
 
   dispatcher.once('finish', () => {
+    const queue = new Queue();
     queue.shift(client.voiceChannel.id);
     if (!queue.isEmpty(client.voiceChannel.id)) {
       next(queue.playingNow(client.voiceChannel.id));
