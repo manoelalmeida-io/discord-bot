@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node src/bot.js",
+    "start": "tsc && node src/bot.js",
     "dev": "nodemon src/bot.js",
     "test": "jest"
   },
@@ -18,6 +18,9 @@
     "ytdl-core": "^3.1.0"
   },
   "devDependencies": {
+    "typescript": "^3.9.5",
+    "ts-node": "^8.10.2",
+    "ts-node-dev": "^1.0.0-pre.44",
     "jest": "^26.0.1",
     "nodemon": "^2.0.3"
   }
