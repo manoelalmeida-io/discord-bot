@@ -1,4 +1,4 @@
-export default function token():string {
+function token():string {
   if (process.env.TOKEN) {
     return process.env.TOKEN;
   }
@@ -6,3 +6,5 @@ export default function token():string {
      return require('./auth.json').token;
   }
 }
+
+export default token;
