@@ -4,9 +4,11 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "tsc && node dist/bot.js",
+    "start": "node dist/bot.js",
     "dev": "nodemon src/bot.js",
-    "test": "jest"
+    "test": "jest",
+    "tsc": "tsc",
+    "postinstall": "npm run tsc"
   },
   "keywords": [],
   "author": "",
@@ -15,10 +17,10 @@
     "@discordjs/opus": "^0.1.0",
     "discord.js": "^12.1.1",
     "express": "^4.17.1",
-    "ytdl-core": "^3.1.0"
+    "ytdl-core": "^3.1.0",
+    "typescript": "^3.9.5"
   },
   "devDependencies": {
-    "typescript": "^3.9.5",
     "ts-node": "^8.10.2",
     "ts-node-dev": "^1.0.0-pre.44",
     "jest": "^26.0.1",
