@@ -3,6 +3,7 @@ import { User, VoiceChannel, Snowflake } from 'discord.js';
 export interface QueueItem {
   title: string;
   url: string;
+  origin: string;
   author: User;
   channel: VoiceChannel;
 }
@@ -25,12 +26,23 @@ export class Queue {
     return queue == undefined ? true : queue.length === 0;
   }
 
-  add(item: QueueItem): void {
+  size(channel: Snowflake): number {
+    const items = this.all.get(channel)
+    return items ? items.length : 0;
+  }
+
+  add(item: QueueItem): number {
     if (!this.all.get(item.channel.id)) {
       this.all.set(item.channel.id, []);
     }
 
-    this.all.get(item.channel.id)?.push(item);
+    const list = this.all.get(item.channel.id);
+
+    if (!list) {
+      throw new Error('Queue list cannot be undefined');
+    }
+
+    return list.push(item);
   }
 
   shift(channel: Snowflake): void {

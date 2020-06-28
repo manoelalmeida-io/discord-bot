@@ -1,11 +1,12 @@
 import { User } from 'discord.js';
 
-function embed(title: string, author: User, next: boolean) {
+function embed(title: string, author: User, origin: string, position: number) {
+
   return {
-    title: next ? 'Now playing' : 'Added to queue',
+    title: position === 1 ? 'Now playing' : `Added to queue - N°${position}`,
     fields: [
       {
-        name: 'from youtube',
+        name: `from ${origin}`,
         value: `${title} - ${author.toString()}`
       }
     ]

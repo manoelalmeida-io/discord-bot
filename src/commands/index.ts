@@ -1,4 +1,4 @@
-import { Client, Message } from 'discord.js';
+import { Message } from 'discord.js';
 
 import play from './music/play';
 import stop from './music/stop';

@@ -15,7 +15,7 @@ const np = async ({ msg }: Params) => {
     const playing = queue.playingNow(voiceChannel.id);
 
     if (playing) {
-      msg.channel.send({ embed: embed(playing.title, playing.author) });
+      msg.channel.send({ embed: embed(playing.title, playing.author, playing.origin) });
     }
   }
 }
