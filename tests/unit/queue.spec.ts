@@ -1,18 +1,18 @@
-const { Queue, QueueItem } = require('../../src/components/music/queue');
+import { Queue, QueueItem } from "../../src/components/music/queue";
+import { VoiceChannel, User } from "discord.js";
 
 describe('Create a queue', () => {
-  let queue;
-  let queueItem;
+  let queue: Queue;
+  let queueItem: QueueItem;
   
   beforeEach(() => {
     queue = new Queue();
-    queue.all.set('channelid', undefined);
-    queueItem = QueueItem(
-      'title',
-      'url',
-      'author',
-      { id: 'channelid' }
-    );
+    queueItem = {
+      title: 'title',
+      url: 'url',
+      author: { username: 'author' } as User,
+      channel: { id: 'channelid' } as VoiceChannel
+    };
   });
 
   it('should verify if the list is empty', () => {
@@ -33,18 +33,25 @@ describe('Create a queue', () => {
 
   it('should add a new item', () => {
     queue.add(queueItem);
-    expect(queue.all.get('channelid')[0]).toEqual(queueItem);
+    expect(queue.playingNow('channelid')).toEqual(queueItem);
   });
 
   it('should remove the first item of the channel list', () => {
+    queue.flush('channelid');
     expect(queue.shift('channelid')).toBe(undefined);
 
     queue.add(queueItem);
-    queue.add(QueueItem('otherTitle', 'url', 'author', { id: 'channelid' }));
-    expect(queue.all.get('channelid')[0].title).toBe('title');
+    queue.add({
+      title: 'otherTitle',
+      url: 'url',
+      author: { username: 'author' } as User,
+      channel: { id: 'channelid' } as VoiceChannel
+    });
+
+    expect(queue.playingNow('channelid')?.title).toBe('title');
 
     queue.shift('channelid');
-    expect(queue.all.get('channelid')[0].title).toBe('otherTitle');
+    expect(queue.playingNow('channelid')?.title).toBe('otherTitle');
   });
 
   it('should flush all items', () => {
@@ -52,14 +59,25 @@ describe('Create a queue', () => {
 
     queue.add(queueItem);
     queue.flush('channelid');
-    expect(queue.all.get('channelid')).toEqual([]);
+    expect(queue.playingNow('channelid')).toEqual(undefined);
   });
 
   it('should get the current item', () => {
     expect(queue.playingNow('channelid')).toBe(undefined);
 
-    const first = QueueItem('firstItem', 'url', 'author', { id: 'channelid' });
-    const second = QueueItem('secondItem', 'url', 'author', { id: 'channelid' });
+    const first = { 
+      title: 'firstItem', 
+      url: 'url', 
+      author: { username: 'author'} as User, 
+      channel: { id: 'channelid' } as VoiceChannel
+    };
+
+    const second = { 
+      title: 'secondItem', 
+      url: 'url', 
+      author: { username: 'author'} as User, 
+      channel: { id: 'channelid' } as VoiceChannel
+    };
 
     queue.add(first);
     queue.add(second);

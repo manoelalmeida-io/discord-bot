@@ -21,7 +21,8 @@ export class Queue {
   }
 
   isEmpty(channel: Snowflake): boolean {
-    return !this.all.get(channel) || this.all.get(channel)?.length === 0;
+    const queue = this.all.get(channel);
+    return queue == undefined ? true : queue.length === 0;
   }
 
   add(item: QueueItem): void {
