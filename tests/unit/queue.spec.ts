@@ -10,6 +10,7 @@ describe('Create a queue', () => {
     queueItem = {
       title: 'title',
       url: 'url',
+      origin: 'origin',
       author: { username: 'author' } as User,
       channel: { id: 'channelid' } as VoiceChannel
     };
@@ -44,6 +45,7 @@ describe('Create a queue', () => {
     queue.add({
       title: 'otherTitle',
       url: 'url',
+      origin: 'origin',
       author: { username: 'author' } as User,
       channel: { id: 'channelid' } as VoiceChannel
     });
@@ -67,14 +69,16 @@ describe('Create a queue', () => {
 
     const first = { 
       title: 'firstItem', 
-      url: 'url', 
+      url: 'url',
+      origin: 'origin',
       author: { username: 'author'} as User, 
       channel: { id: 'channelid' } as VoiceChannel
     };
 
     const second = { 
       title: 'secondItem', 
-      url: 'url', 
+      url: 'url',
+      origin: 'origin',
       author: { username: 'author'} as User, 
       channel: { id: 'channelid' } as VoiceChannel
     };
