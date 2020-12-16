@@ -1,9 +1,9 @@
-import ytdl from 'ytdl-core';
-import { Client, Message, VoiceChannel } from 'discord.js';
+import { Client, Message } from 'discord.js';
 
 import embed from '../../embeds/music/play';
 import { Queue, QueueItem } from '../../components/music/queue';
 import { Link } from '../../components/music/link';
+import { Search } from '../../components/music/search';
 
 interface Params {
   client: Client;
@@ -13,9 +13,13 @@ interface Params {
 
 const play = async ({ msg, args }: Params) => {
   const link = new Link();
+  const search = new Search();
   const queue = new Queue();
 
-  const url = args[0];
+  const url = link.isLink(args[0]) 
+      ? args[0]
+      : await search.findLinkBySearch(args.join(' '));
+
   const channel = msg.member?.voice.channel;
   const origin = link.origin(url);
 
