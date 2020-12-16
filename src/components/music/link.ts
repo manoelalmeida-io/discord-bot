@@ -5,6 +5,10 @@ export class Link {
   private ytRegex = RegExp('^(http(s)?:\/\/)?((w){3}.)?(music.)?youtu(be|.be)?(\.com)?\/.+');
   private fileRegex = RegExp('([a-zA-Z0-9\s_\\.\\-\\(\):])+(.mp3|.wav)$');
 
+  isLink(link: string): boolean {
+    return this.origin(link) !== 'unknown';
+  }
+
   origin(link: string): string {
     if (this.ytRegex.test(link)) {
       return 'youtube';
