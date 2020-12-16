@@ -12,7 +12,7 @@ client.on('ready', ():void => {
 client.on('message', async (msg: Discord.Message):Promise<void> => {
   const message = msg.content;
 
-  if (message.startsWith('!')) {
+  if (message.startsWith('.')) {
     const args: Array<string> = message.substr(1).split(' ');
     const command = args.shift();
 
