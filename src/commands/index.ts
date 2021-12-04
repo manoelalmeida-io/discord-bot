@@ -1,6 +1,7 @@
 import { Message } from 'discord.js';
 
 import play from './music/play';
+import skip from './music/skip';
 import stop from './music/stop';
 import pause from './music/pause';
 import resume from './music/resume';
@@ -10,6 +11,7 @@ import fala from './misc/fala';
 
 interface AcceptedCommands {
   play?: Function;
+  skip?: Function;
   stop?: Function;
   pause?: Function;
   resume?: Function;
@@ -19,6 +21,7 @@ interface AcceptedCommands {
 
 const acceptedCommands: AcceptedCommands  = {
   play,
+  skip,
   stop,
   pause,
   resume,
