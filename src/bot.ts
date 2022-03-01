@@ -1,8 +1,11 @@
 import Discord from 'discord.js';
+import dotenv from 'dotenv';
 
-import token from './config';
 import * as commands from './commands';
 
+dotenv.config({ path: '.env.development.local' });
+
+const token = process.env.TOKEN;
 const client = new Discord.Client();
 
 client.on('ready', ():void => {
@@ -24,4 +27,4 @@ client.on('message', async (msg: Discord.Message):Promise<void> => {
   }
 });
 
-client.login(token());
+client.login(token);
