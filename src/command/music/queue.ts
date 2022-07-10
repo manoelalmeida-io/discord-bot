@@ -15,34 +15,38 @@ interface EmbedParams {
   totalPages: number;
 }
 
+const action = async ({ client, interaction, player }: Params) => {
+
+  const queue = player.getQueue(interaction.guildId!!);
+
+  if (!queue || !queue.playing) {
+    return await interaction.editReply('There are no songs in the queue');
+  }
+
+  if (interaction.options.getSubcommand() === 'show') {
+    const totalPages = Math.ceil(queue.tracks.length / 10) || 1;
+    const page = (interaction.options.getInteger('page') || 1) - 1;
+
+    if (page > totalPages) {
+      return await interaction.editReply(`Invalid page. The queue only has ${totalPages} pages`);
+    }
+
+    const current = queue.current;
+
+    await interaction.editReply({
+      embeds: [embed({ current, queue, page, totalPages })]
+    });
+  }
+}
+
 const command = {
   data: new SlashCommandBuilder()
       .setName('queue')
-      .setDescription('shows and controls queue')
+      .setDescription('Shows and controls queue')
       .addSubcommand((subcommand) => subcommand.setName('show')
-          .setDescription('shows the queue')
+          .setDescription('Shows the queue')
           .addIntegerOption((option) => option.setName('page').setDescription('page to show'))),
-  run: async ({ client, interaction, player }: Params) => {
-    const queue = player.getQueue(interaction.guildId!!);
-    if (!queue || !queue.playing) {
-      return await interaction.editReply('There are no songs in the queue');
-    }
-
-    if (interaction.options.getSubcommand() === 'show') {
-      const totalPages = Math.ceil(queue.tracks.length / 10) || 1;
-      const page = (interaction.options.getInteger('page') || 1) - 1;
-
-      if (page > totalPages) {
-        return await interaction.editReply(`Invalid page. The queue only has ${totalPages} pages`);
-      }
-
-      const current = queue.current;
-
-      await interaction.editReply({
-        embeds: [embed({ current, queue, page, totalPages })]
-      });
-    }
-  }
+  run: action
 }
 
 const embed = ({ current, queue, page, totalPages } : EmbedParams) => {
