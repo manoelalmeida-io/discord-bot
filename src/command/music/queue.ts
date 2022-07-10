@@ -36,6 +36,10 @@ const action = async ({ client, interaction, player }: Params) => {
     await interaction.editReply({
       embeds: [embed({ current, queue, page, totalPages })]
     });
+    
+  } else if (interaction.options.getSubcommand() === 'shuffle') {
+    queue.shuffle();
+    await interaction.editReply(`The queue of ${queue.tracks.length} songs have been shuffled!`)
   }
 }
 
@@ -45,7 +49,9 @@ const command = {
       .setDescription('Shows and controls queue')
       .addSubcommand((subcommand) => subcommand.setName('show')
           .setDescription('Shows the queue')
-          .addIntegerOption((option) => option.setName('page').setDescription('page to show'))),
+          .addIntegerOption((option) => option.setName('page').setDescription('page to show')))
+      .addSubcommand((subcommand) => subcommand.setName('shuffle')
+          .setDescription('Shuffles the queue')),
   run: action
 }
 
