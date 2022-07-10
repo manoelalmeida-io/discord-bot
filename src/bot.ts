@@ -7,7 +7,7 @@ import { Routes } from 'discord-api-types/v9';
 
 import commands from './command';
 
-// dotenv.config({ path: '.env.development.local' });
+dotenv.config({ path: '.env.development.local' });
 
 const TOKEN = process.env.TOKEN;
 
