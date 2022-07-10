@@ -19,55 +19,57 @@ interface PlaylistEmbedParams {
   playlist: Playlist
 }
 
+const action = async ({ client, interaction, player }: Params) => {
+  if (!(interaction.member as GuildMember).voice.channel) {
+    return interaction.editReply('You need to be in a voice chat to use this command');
+  }
+
+  let search = interaction.options.getString('search');
+
+  const queue = await player.createQueue(interaction.guild!);
+  if (!queue.connection) {
+    await queue.connect((interaction.member as GuildMember).voice.channel!);
+  }
+
+  const result = await player.search(search ?? '', {
+    requestedBy: interaction.user
+  });
+
+  if (result.tracks.length === 0) {
+    return interaction.editReply("Your search give no results");
+  }
+
+  const embeds = [];
+  const components = new MessageActionRow();
+
+  const song = result.tracks[0];
+
+  if (result.playlist) {
+    await queue.addTracks(result.playlist?.tracks);
+    embeds.push(playlistEmbed({ playlist: result.playlist }));
+    components.addComponents(ShowQueueButton);
+  } else {
+    await queue.addTrack(song);
+  }
+
+  if (!queue.playing) {
+    await queue.play();
+  }
+
+  return interaction.editReply({
+    embeds: [...embeds, embed({ song, queue })],
+    components: result.playlist ? [components] : []
+  });
+}
+
 const command = {
   data: new SlashCommandBuilder()
     .setName('play')
-    .setDescription('play a music by name or url')
+    .setDescription('Play a music by name or url')
     .addStringOption((option) => option.setName('search')
-        .setDescription('music name or url')
+        .setDescription('Music name or url')
         .setRequired(true)),
-  run: async ({ client, interaction, player }: Params) => {
-    if (!(interaction.member as GuildMember).voice.channel) {
-      return interaction.editReply('You need to be in a voice chat to use this command');
-    }
-
-    let search = interaction.options.getString('search');
-
-    const queue = await player.createQueue(interaction.guild!);
-		if (!queue.connection) {
-      await queue.connect((interaction.member as GuildMember).voice.channel!);
-    }
-
-    const result = await player.search(search ?? '', {
-      requestedBy: interaction.user
-    });
-
-    if (result.tracks.length === 0) {
-      return interaction.editReply("Your search give no results");
-    }
-
-    const embeds = [];
-    const components = new MessageActionRow();
-
-    const song = result.tracks[0];
-
-    if (result.playlist) {
-      await queue.addTracks(result.playlist?.tracks);
-      embeds.push(playlistEmbed({ playlist: result.playlist }));
-      components.addComponents(ShowQueueButton);
-    } else {
-      await queue.addTrack(song);
-    }
-
-    if (!queue.playing) {
-      await queue.play();
-    }
-
-    return interaction.editReply({
-      embeds: [...embeds, embed({ song, queue })],
-      components: result.playlist ? [components] : []
-    });
-  }
+  run: action
 }
 
 const embed = ({ song, queue } : EmbedParams) => {
