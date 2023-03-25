@@ -1,4 +1,4 @@
-import { Client, Intents } from 'discord.js';
+import { Client, GatewayIntentBits } from 'discord.js';
 import { Player } from 'discord-player';
 import dotenv from 'dotenv';
 
@@ -14,7 +14,7 @@ const TOKEN = process.env.TOKEN;
 const CLIENT_ID = '474933203678003201';
 const GUILD_ID = '467073140804157462';
 
-const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_VOICE_STATES] });
+const client = new Client({ intents: [ GatewayIntentBits.Guilds, GatewayIntentBits.GuildVoiceStates] });
 const player = new Player(client, {
   ytdlOptions: {
     quality: 'highestaudio',

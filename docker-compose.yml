@@ -1,0 +1,12 @@
+version: '3'
+
+services:
+  api:
+    build:
+      context: .
+      target: base
+    env_file:
+      - .env.development.local
+    volumes:
+      - ./:/code
+    command: npm run dev

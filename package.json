@@ -6,33 +6,35 @@
   "scripts": {
     "start": "node dist/src/bot.js",
     "dev": "ts-node-dev src/bot.ts",
+    "build": "tsc",
     "test": "jest",
-    "tsc": "tsc",
-    "postinstall": "npm run tsc"
+    "tsc": "tsc"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@discordjs/builders": "^0.12.0",
-    "@discordjs/opus": "^0.5.3",
-    "@discordjs/rest": "^0.3.0",
-    "@discordjs/voice": "^0.8.0",
-    "discord-player": "^5.2.2",
-    "discord.js": "^13.6.0",
-    "discord-api-types": "^0.27.3",
-    "dotenv": "^16.0.0"
+    "@discord-player/extractor": "^4.1.2",
+    "@discordjs/builders": "^1.5.0",
+    "@discordjs/opus": "^0.9.0",
+    "@discordjs/rest": "^1.6.0",
+    "@discordjs/voice": "^0.15.0",
+    "discord-api-types": "^0.37.37",
+    "discord-player": "^6.1.1",
+    "discord.js": "^14.8.0",
+    "dotenv": "^16.0.3",
+    "ytdl-core": "^4.11.2"
   },
   "devDependencies": {
-    "@types/jest": "^26.0.19",
-    "@types/yt-search": "^2.3.0",
+    "@types/jest": "^26.0.24",
     "jest": "^26.6.3",
-    "nodemon": "^2.0.6",
-    "ts-jest": "^26.4.4",
+    "nodemon": "^2.0.22",
+    "ts-jest": "^26.5.6",
     "ts-mockito": "^2.6.1",
-    "ts-node": "^10.6.0",
-    "ts-node-dev": "^1.1.8",
-    "typescript": "^4.6.2"
+    "ts-node": "^10.9.1",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.0.2",
+    "youtube-sr": "^4.3.4"
   },
   "jest": {
     "transform": {

@@ -1,6 +1,6 @@
 import { SlashCommandBuilder } from "@discordjs/builders";
-import { Player, Queue, Track } from "discord-player";
-import { CacheType, Client, CommandInteraction, MessageEmbed } from "discord.js";
+import { Player, GuildQueue, Track, useQueue } from "discord-player";
+import { CacheType, Client, CommandInteraction, CommandInteractionOptionResolver, EmbedBuilder } from "discord.js";
 
 interface Params {
   client: Client;
@@ -10,36 +10,36 @@ interface Params {
 
 interface EmbedParams {
   current: Track;
-  queue: Queue;
+  queue: GuildQueue;
   page: number;
   totalPages: number;
 }
 
 const action = async ({ client, interaction, player }: Params) => {
 
-  const queue = player.getQueue(interaction.guildId!!);
+  const queue = useQueue(interaction.guildId!!);
 
-  if (!queue || !queue.playing) {
+  if (!queue || !queue.isPlaying) {
     return await interaction.editReply('There are no songs in the queue');
   }
 
-  if (interaction.options.getSubcommand() === 'show') {
-    const totalPages = Math.ceil(queue.tracks.length / 10) || 1;
-    const page = (interaction.options.getInteger('page') || 1) - 1;
+  if ((interaction.options as CommandInteractionOptionResolver).getSubcommand() === 'show') {
+    const totalPages = Math.ceil(queue.tracks.size / 10) || 1;
+    const page = ((interaction.options as CommandInteractionOptionResolver).getInteger('page') || 1) - 1;
 
     if (page > totalPages) {
       return await interaction.editReply(`Invalid page. The queue only has ${totalPages} pages`);
     }
 
-    const current = queue.current;
+    const current = queue.currentTrack!;
 
     await interaction.editReply({
       embeds: [embed({ current, queue, page, totalPages })]
     });
     
-  } else if (interaction.options.getSubcommand() === 'shuffle') {
-    queue.shuffle();
-    await interaction.editReply(`The queue of ${queue.tracks.length} songs have been shuffled!`)
+  } else if ((interaction.options as CommandInteractionOptionResolver).getSubcommand() === 'shuffle') {
+    queue.tracks.shuffle();
+    await interaction.editReply(`The queue of ${queue.tracks.size} songs have been shuffled!`)
   }
 }
 
@@ -57,13 +57,13 @@ const command = {
 
 const embed = ({ current, queue, page, totalPages } : EmbedParams) => {
 
-  const queueString = queue.tracks.slice(page * 10, page * 10 + 10).map((song, i) => {
-    return `**${page * 10 + i + 1}.** \`[${song.duration}]\` ${song.title} -- <@${song.requestedBy.id}>`;
+  const queueString = queue.tracks.data.slice(page * 10, page * 10 + 10).map((song, i) => {
+    return `**${page * 10 + i + 1}.** \`[${song.duration}]\` ${song.title} -- <@${song.requestedBy?.id}>`;
   }).join("\n")
 
-  return new MessageEmbed()
+  return new EmbedBuilder()
       .setDescription(`**Currently Playing**\n` +
-      (current ? `\`[${current.duration}]\` ${current.title} -- <@${current.requestedBy.id}>` : 'None') + 
+      (current ? `\`[${current.duration}]\` ${current.title} -- <@${current.requestedBy?.id}>` : 'None') + 
       `\n\n**Queue**\n${queueString}`
       )
       .setFooter({
