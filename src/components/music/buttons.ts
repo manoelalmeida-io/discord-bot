@@ -1,7 +1,6 @@
-import { MessageButton } from "discord.js";
-import { MessageButtonStyles } from "discord.js/typings/enums";
+import { ButtonBuilder, ButtonStyle } from "discord.js";
 
-export const ShowQueueButton = new MessageButton()
+export const ShowQueueButton = new ButtonBuilder()
     .setCustomId('show-queue')
     .setLabel('Show Queue')
-    .setStyle(MessageButtonStyles.SECONDARY);
+    .setStyle(ButtonStyle.Secondary);

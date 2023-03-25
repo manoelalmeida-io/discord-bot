@@ -1,6 +1,6 @@
-import { SlashCommandBuilder } from '@discordjs/builders';
-import { Player, Playlist, Queue, Track } from 'discord-player';
-import { CacheType, Client, GuildMember, CommandInteraction, MessageEmbed, Message, MessageActionRow } from 'discord.js';
+import { ActionRowBuilder, ButtonBuilder, SlashCommandBuilder } from '@discordjs/builders';
+import { Player, Playlist, GuildQueue, Track, useQueue } from 'discord-player';
+import { CacheType, Client, GuildMember, CommandInteraction, EmbedBuilder, CommandInteractionOptionResolver } from 'discord.js';
 import { ShowQueueButton } from '../../components/music/buttons';
 import { playlistDuration } from '../../utils/music-utils';
 
@@ -12,7 +12,7 @@ interface Params {
 
 interface EmbedParams {
   song: Track;
-  queue: Queue;
+  queue: GuildQueue;
 }
 
 interface PlaylistEmbedParams {
@@ -24,12 +24,7 @@ const action = async ({ client, interaction, player }: Params) => {
     return interaction.editReply('You need to be in a voice chat to use this command');
   }
 
-  let search = interaction.options.getString('search');
-
-  const queue = await player.createQueue(interaction.guild!);
-  if (!queue.connection) {
-    await queue.connect((interaction.member as GuildMember).voice.channel!);
-  }
+  let search = (interaction.options as CommandInteractionOptionResolver).getString('search');
 
   const result = await player.search(search ?? '', {
     requestedBy: interaction.user
@@ -39,22 +34,18 @@ const action = async ({ client, interaction, player }: Params) => {
     return interaction.editReply("Your search give no results");
   }
 
-  const embeds = [];
-  const components = new MessageActionRow();
+  const embeds: any[] = [];
+  const components = new ActionRowBuilder<ButtonBuilder>().addComponents(ShowQueueButton);
 
   const song = result.tracks[0];
 
   if (result.playlist) {
-    await queue.addTracks(result.playlist?.tracks);
     embeds.push(playlistEmbed({ playlist: result.playlist }));
-    components.addComponents(ShowQueueButton);
-  } else {
-    await queue.addTrack(song);
   }
 
-  if (!queue.playing) {
-    await queue.play();
-  }
+  await player.play((interaction.member as GuildMember).voice.channel!, result)
+
+  const queue = useQueue(interaction.guild?.id!)!;
 
   return interaction.editReply({
     embeds: [...embeds, embed({ song, queue })],
@@ -73,8 +64,8 @@ const command = {
 }
 
 const embed = ({ song, queue } : EmbedParams) => {
-  const current = queue.current == song;
-  return new MessageEmbed()
+  const current = queue.currentTrack == song;
+  return new EmbedBuilder()
       .setTitle(current ? 'Now playing' : 'Added to the queue')
       .setDescription(`${song.author} - **[${song.title}](${song.url})**`)
       .setThumbnail(song.thumbnail)
@@ -85,7 +76,7 @@ const playlistEmbed = ({ playlist } : PlaylistEmbedParams) => {
   const size = playlist.tracks.length;
   const duration = playlistDuration({ playlist });
 
-  return new MessageEmbed()
+  return new EmbedBuilder()
       .setTitle(`${size} tracks added to queue`)
       .setDescription(`${playlist.author.name} - **[${playlist.title}](${playlist.url})**`)
       .setThumbnail(playlist.thumbnail)

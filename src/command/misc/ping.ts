@@ -1,8 +1,8 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
-import { CacheType, BaseCommandInteraction } from 'discord.js';
+import { CacheType, CommandInteraction } from 'discord.js';
 
 interface Params {
-  interaction: BaseCommandInteraction<CacheType>
+  interaction: CommandInteraction<CacheType>
 }
 
 const command = {

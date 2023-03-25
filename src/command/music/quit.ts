@@ -1,5 +1,5 @@
 import { SlashCommandBuilder } from "@discordjs/builders";
-import { Player } from "discord-player";
+import { Player, useQueue } from "discord-player";
 import { CacheType, Client, CommandInteraction } from "discord.js";
 
 interface Params {
@@ -10,11 +10,8 @@ interface Params {
 
 const action = async ({ client, interaction, player }: Params) => {
 
-  const queue = player.getQueue(interaction.guildId!!);
-
-  if (queue) {
-    queue.destroy();
-  }
+  const queue = useQueue(interaction.guildId!!);
+  queue?.delete();
 
   await interaction.editReply("Bye!");
 }
